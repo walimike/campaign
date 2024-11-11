@@ -27,7 +27,8 @@ class CampaignDataAggregator:
         self.merged_df = self.merged_df[self.merged_df['data_date'] <= date_to]
 
   def calculate_metrics(self):
-    self.merged_df['date'] = self.merged_df['data_date'].dt.strftime('%Y/%m/%d')
+    self.merged_df['date'] = self.merged_df['data_date']
+    print("=============>", self.merged_df['date'],"=======>", self.merged_df['date'].dt.strftime('%Y/%m/%d'))
     self.merged_df['total_profit'] = self.merged_df['revenue'] - self.merged_df['cost']
     self.merged_df['UV'] = self.merged_df['revenue'] / self.merged_df['clicks']
     self.merged_df['CPC'] = self.merged_df['cost'] / self.merged_df['clicks']
@@ -41,7 +42,7 @@ class CampaignDataAggregator:
         total_clicks=('clicks', 'sum'),
         avg_cpc=('CPC', 'mean'),
         total_roi=('ROI', 'mean'),
-        hourly_avg_revenue=('revenue', 'mean')  # Assuming hourly average over multiple rows in a day
+        hourly_avg_revenue=('revenue', 'mean')  
     ).reset_index()
 
   def save_data(self, output_file):
