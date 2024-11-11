@@ -9,8 +9,11 @@ class CampaignDataAggregator:
     self.revenue_df = pd.read_csv(self.revenue_file)
     self.cost_df = pd.read_csv(self.cost_file)
 
-    self.revenue_df['data_date'] = pd.to_datetime(self.revenue_df['data_date'], format='%m/%d/%y %H:%M').dt.tz_localize('America/New_York').dt.tz_convert('UTC')
-    self.cost_df['data_date'] = pd.to_datetime(self.cost_df['data_date'], format='%m/%d/%y %H:%M').dt.tz_localize('America/New_York').dt.tz_convert('UTC')
+    self.revenue_df['data_date'] = pd.to_datetime(self.revenue_df['data_date'], format='%m/%d/%y %H:%M', errors='coerce')
+    self.cost_df['data_date'] = pd.to_datetime(self.cost_df['data_date'], format='%m/%d/%y %H:%M', errors='coerce')
+    
+    self.revenue_df['data_date'] = self.revenue_df['data_date'].dt.tz_localize('America/New_York', ambiguous='NaT', nonexistent='shift_forward').dt.tz_convert('UTC')
+    self.cost_df['data_date'] = self.cost_df['data_date'].dt.tz_localize('America/New_York', ambiguous='NaT', nonexistent='shift_forward').dt.tz_convert('UTC')
 
   def merge_data(self):
     self.merged_df = pd.merge(self.revenue_df, self.cost_df, on=['data_date', 'campaign_id'], how='inner')
